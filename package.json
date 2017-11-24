@@ -1,0 +1,22 @@
+{
+  "name": "liri-node-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "keys.js",
+  "scripts": {
+    "test": "node liri.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peraltot/liri-node-app.git"
+  },
+  "author": "Thomas Peralto",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "moment": "^2.17.1",
+    "request": "^2.79.0",
+    "twitter": "^1.7.0",
+    "spotify": "^0.3.0"
+  }
+}
