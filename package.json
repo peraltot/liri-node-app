@@ -16,7 +16,7 @@
     "colors": "^1.1.2",
     "moment": "^2.17.1",
     "request": "^2.79.0",
-    "twitter": "^1.7.0",
-    "spotify": "^0.3.0"
+    "node-spotify-api": "^1.0.7",
+    "twitter": "^1.7.0"
   }
 }

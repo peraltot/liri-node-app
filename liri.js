@@ -8,6 +8,7 @@ const req = require('request');
 const Twitter = require('twitter');
 const colors = require('colors');
 const moment = require('moment');
+const Spotify = require('node-spotify-api');
 
 const twitterKeys = keys.twitterKeys;
 
@@ -21,14 +22,12 @@ const file = readline.createInterface({
 
 let command = process.argv[2];
 let commandString = process.argv[3];
-let extraCommands = process.argv[4];
 
 let preventWrite = false;
 
 const twitter = new Twitter(twitterKeys);
 
 //----------------------------------------------------------------------
-
 /**
  * Application entry point.
  */
@@ -51,25 +50,25 @@ const runCommand = (command) => {
         case "my-tweets":
             myTweets();
             logCommand('my-tweets', '', '');
-        break;
+            break;
 
         case "spotify-this-song":
-            searchSpotifySong(commandString, parseInt(extraCommands) ? parseInt(extraCommands) : 1);
-            logCommand('spotify-this-song', `${commandString}`, extraCommands);
-        break;
+            searchSpotifySong(commandString);
+            logCommand('spotify-this-song', `${commandString}`);
+            break;
 
         case "movie-this":
             searchMovieAPI(commandString);
-            logCommand('movie-this',  commandString ? commandString : '', '');
-        break;
+            logCommand('movie-this', commandString ? commandString : '', '');
+            break;
 
         case "do-what-it-says":
             readRandomTextFile();
-        break;
+            break;
 
         default:
             console.warn(`Unable to find the command ${command}`.red);
-        return;
+            return;
     }
 };
 
@@ -82,11 +81,11 @@ const myTweets = (username = 'tomperalto') => {
         screen_name: username.trim(),
         count: 20
     }, function (error, tweets) {
-        if(error)
+        if (error)
             throw error;
 
         let i = 0;
-        tweets.forEach(function() {
+        tweets.forEach(function () {
             let time = moment(tweets[i].created_at, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').format('MM/DD/YYYY hh:mm A');
 
             console.log(`${time}: ${tweets[i].text}`);
@@ -99,57 +98,51 @@ const myTweets = (username = 'tomperalto') => {
 
 /**
  * Get information about a song from the Spotify API.
- * @param song
- * @param listLimit
+* @param song
+* @param listLimit
  */
+// var Spotify = new SpotifyWebApi({
+//     clientId : 'df3d08264bd14007a71b3aec9c7b9196',
+//     clientSecret : 'f0c72e1499b6408d93a9c602d5f0b230'
+//   });
+//spotify function
+
 const searchSpotifySong = (song = 'the sign', listLimit = 1) => {
-        if(!song)
-            throw new Error('Missing song title');
 
-    req(`https://api.spotify.com/v1/search?type=track&q=${song}&limit=20`, function (err, res) {
-        if (err)
-            throw new err;
+var spotify = new Spotify({
+  id: "df3d08264bd14007a71b3aec9c7b9196",
+  secret: "f0c72e1499b6408d93a9c602d5f0b230"
+});
 
-        const json = JSON.parse(res.body);
+spotify.search({ type: 'track', query: song }, function(err, data) {
+  if (err) {
+    return console.log('Error occurred: ' + err);
+  }
 
-        let curListCount = 0;
+//   console.log(data); 
+  console.log(colors.green(data.tracks.items[0].name)); 
+  console.log(colors.green(data.tracks.items[0].album.artists[0].name));
+  console.log(colors.green(data.tracks.items[0].preview_url));
+  console.log(colors.green(data.tracks.items[0].album.name));
 
-        json.tracks.items.some(function(data) {
-            let info = data;
-            let artistName = info.artists[0].name;
-            let songName = info.name;
-            let prev_URL = info.preview_url;
-            let album = info.album.name;
+});
+}
 
-            if (songName.toLowerCase() == song.toLowerCase()) {
-                console.log(`Song: ${songName}\nArtist Name: ${artistName}\nAlbum: ${album}\nPreview URL: ${prev_URL}\n`);
-
-                curListCount++;
-                if (curListCount == listLimit)
-                    return true;  // Break out of the loop if we reach the listing limit.
-            }
-        });
-
-        if (curListCount == 0)
-            return console.log(`We could not find the song you were looking for.`.yellow);
-
-    });
-};
 
 /**
  * Searching the movie API for information.
  * @param movie
  */
 const searchMovieAPI = (movie = 'mr nobody') => {
-       /* Title of the movie.
-        Year the movie came out.
-        IMDB Rating of the movie.
-        Country where the movie was produced.
-        Language of the movie.
-        Plot of the movie.
-        Actors in the movie.
-        Rotten Tomatoes Rating.
-        Rotten Tomatoes URL.*/
+    /* Title of the movie.
+     Year the movie came out.
+     IMDB Rating of the movie.
+     Country where the movie was produced.
+     Language of the movie.
+     Plot of the movie.
+     Actors in the movie.
+     Rotten Tomatoes Rating.
+     Rotten Tomatoes URL.*/
 
     req(`http://www.omdbapi.com/?t=${movie}&plot=short&r=json&tomatoes=true&apikey=40e9cece`, function (err, res) {
         const json = JSON.parse(res.body);
@@ -172,7 +165,7 @@ const searchMovieAPI = (movie = 'mr nobody') => {
 const readRandomTextFile = () => {
     preventWrite = true;
 
-    file.on('line', function(data) {
+    file.on('line', function (data) {
         let split = data.split(',');
 
         command = split[0];
@@ -187,7 +180,7 @@ const readRandomTextFile = () => {
  * Log the command to file.
  * @param command
  * @param commandValue
- * @param extraCommands
+//  * @param extraCommands
  * @param callback
  */
 const logCommand = (command, commandValue, extraCommands, callback) => {
@@ -200,18 +193,13 @@ const logCommand = (command, commandValue, extraCommands, callback) => {
     if (command == 'do-what-it-says')
         throw new Error('Command will result in a loop');
 
-    if (extraCommands !== '')
-        io.appendFile(randomTextFile, `\n${command},${commandValue},${extraCommands}`, function(err) {
-            if (err)
-                throw err;
-        });
     else
-        io.appendFile(randomTextFile, `\n${command},${commandValue}`, function(err) {
+        io.appendFile(randomTextFile, `\n${command},${commandValue}`, function (err) {
             if (err)
                 throw err;
         });
 
-    if(callback)
+    if (callback)
         callback();
 };
 
