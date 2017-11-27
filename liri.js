@@ -107,7 +107,7 @@ const myTweets = (username = 'tomperalto') => {
 //   });
 //spotify function
 
-const searchSpotifySong = (song = 'the sign', listLimit = 1) => {
+const searchSpotifySong = (song = "album:The%20Sign%20artist:Ace%20of%20Base", listLimit = 1) => {
 
 var spotify = new Spotify({
   id: "df3d08264bd14007a71b3aec9c7b9196",
@@ -170,7 +170,6 @@ const readRandomTextFile = () => {
 
         command = split[0];
         commandString = split[1];
-        extraCommands = split[2];
 
         runCommand(command);
     });
@@ -180,10 +179,9 @@ const readRandomTextFile = () => {
  * Log the command to file.
  * @param command
  * @param commandValue
-//  * @param extraCommands
  * @param callback
  */
-const logCommand = (command, commandValue, extraCommands, callback) => {
+const logCommand = (command, commandValue, callback) => {
     if (preventWrite === true)
         return;
 
