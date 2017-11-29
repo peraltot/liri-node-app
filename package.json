@@ -13,8 +13,8 @@
   "author": "Thomas Peralto",
   "license": "ISC",
   "dependencies": {
-    "colors": "^1.1.2",
-    "moment": "^2.17.1",
+    "fs": "0.0.2",
+    "prompt": "^1.0.0",
     "request": "^2.79.0",
     "node-spotify-api": "^1.0.7",
     "twitter": "^1.7.0"
