@@ -24,15 +24,16 @@ var doWhat = 'WHAZ-UP';
 
 //prompt start
 
-prompt.message = colors.red("Type one of the following: my-tweets, spotify-this-song, movie-this, or WHAZ-UP");
-prompt.delimiter = colors.cyan("\n");
+prompt.message = colors.red("");
+// prompt.delimiter = colors.cyan("\n");
 
 prompt.start();
+
 //asks the user what option they have chosen from the information given in the prompt message
 prompt.get({
 	properties: {
 		userInput: {
-			description: colors.green('Tell me want you want, what you really, really want?')
+			description: colors.green("Type one of the following: my-tweets, spotify-this-song, movie-this, or WHAZ-UP" + "\n" + 'Tell me want you want, what you really, really want?')
 		}
 	}
 }, function (err, result) {
@@ -113,9 +114,14 @@ function myTwitter() {
 				console.log(tDate.toString().slice(0, 24) + " ");
 				console.log(timeline[tweet].text);
 				console.log("\n");
-
 			}
+			//append all of this information to the txt file 
+			fs.appendFile('log.txt', "Tweet #: " + (parseInt(tweet) + 1) + "\n"+ timeline[tweet].text + "\n",genericCallback);
 		}
+		function genericCallback(err) {
+			if (err) throw err;
+		};
+
 	})
 
 }
@@ -149,8 +155,15 @@ function mySpotify(userSelection) {
 				console.log(colors.green("Song Name: ") + music[i].name);
 				console.log(colors.green("Preview Link of the song from Spotify: ") + music[i].preview_url);
 				console.log(colors.green("Album Name: ") + music[i].album.name + "\n");
+				//this appends the data we receive from the spotify API to the log.txt file
+				fs.appendFile('log.txt', "\n" + "Artist: " + music[i].artists[j].name + "\n" + "Song Name: " + music[i].name + "\n" + "Preview Link of the song from Spotify: " + music[i].preview_url + "\n" + "Album Name: " + music[i].album.name + "\n", genericCallback);
 			}
 		}
+
+		function genericCallback(err) {
+			if (err) throw err;
+		};
+
 	});
 }
 
@@ -173,8 +186,15 @@ function myMovies(movietitle) {
 		console.log(colors.green('Plot: ') + json.Plot);
 		console.log(colors.red('Rotten Tomatoes URL: ') + json.tomatoURL);
 
-	})
-}
+		//append the results to the log.txt file
+		fs.appendFile("log.txt", "\n" + "Title: " + json.Title + "\n" + "Year: " + json.Year + "\n" + "imdbRating: " + json.imdbRating + "\n" + "Country: " + json.Country + "\n" + "Language: " + json.Language + "\n" + "Actors: " + json.Actors + "\n" + "Plot: " + json.Plot + "\n" + "Rotten Tomatoes URL: " + json.tomatoURL + "\n", genericCallback);
+	});
+
+	function genericCallback(err) {
+		if (err) throw err;
+	};
+
+};
 
 
 //final option aka surprise
