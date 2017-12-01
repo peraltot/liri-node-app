@@ -23,12 +23,9 @@ var movies = 'movie-this';
 var doWhat = 'WHAZ-UP';
 
 //prompt start
-
-prompt.message = colors.red("");
-// prompt.delimiter = colors.cyan("\n");
+prompt.message = ("");
 
 prompt.start();
-
 //asks the user what option they have chosen from the information given in the prompt message
 prompt.get({
 	properties: {
@@ -53,7 +50,6 @@ prompt.get({
 				}
 			}
 		}, function (err, result) {
-
 			if (result.userSelection === "") {
 				userSelection = "album:The%20Sign%20artist:Ace%20of%20Base";
 			} else {
@@ -84,8 +80,6 @@ prompt.get({
 	};
 });
 
-
-
 //twitter function
 function myTwitter() {
 	//this assigns the variable client to get the information from the twitterKeys variable set above so we can access twitters information
@@ -101,14 +95,12 @@ function myTwitter() {
 		count: '20',
 		trim_user: false,
 	}
-
 	// this is the call to twitter, it gets the statuses/user timeline from twitter based on the params set above
 	client.get('statuses/user_timeline', params, function (error, timeline, response) {
 		if (!error) {
 			for (tweet in timeline) {
 				//this creates the variable tdate which will store the result of the date from the twitter call for easier access later
 				var tDate = new Date(timeline[tweet].created_at);
-
 				//console.log all of the tweets organizing them by tweet# followed by the date of the tweet and finally the text of the tweet itself
 				console.log("Tweet #: " + (parseInt(tweet) + 1) + " ");
 				console.log(tDate.toString().slice(0, 24) + " ");
@@ -121,20 +113,16 @@ function myTwitter() {
 		function genericCallback(err) {
 			if (err) throw err;
 		};
-
 	})
-
 }
 
 //spotify function
-
 function mySpotify(userSelection) {
 	//this starts the search within spotify for the track and the query based on the userselection set in the if/else statement above.  if there is an error it throws the error and continues getting the information.  
 	var spotify = new Spotify({
 		id: spotifyKeys.id,
 		secret: spotifyKeys.secret
 	});
-
 	spotify.search({
 		type: 'track',
 		query: userSelection,
@@ -144,8 +132,6 @@ function mySpotify(userSelection) {
 			console.error('Something went wrong', err.message);
 			return;
 		}
-
-		// if (err) throw err;
 		//this sets the variable music to get the initial information from the object, just so it's easier to call in the for loop below
 		var music = data.tracks.items;
 		//this loops through the object that we get from spotify and then loops through each objects information to get what we need from spotify
@@ -159,17 +145,13 @@ function mySpotify(userSelection) {
 				fs.appendFile('log.txt', "\n" + "Artist: " + music[i].artists[j].name + "\n" + "Song Name: " + music[i].name + "\n" + "Preview Link of the song from Spotify: " + music[i].preview_url + "\n" + "Album Name: " + music[i].album.name + "\n", genericCallback);
 			}
 		}
-
 		function genericCallback(err) {
 			if (err) throw err;
 		};
-
 	});
 }
 
 //movie omdb
-
-
 function myMovies(movietitle) {
 	//use request to access the omdb api and input the movietitle variable that is defined above as the movie we are searching for
 	request('http://www.omdbapi.com/?t=' + movietitle + '&y=&plot=short&tomatoes=true&r=json&apikey=40e9cece', function (error, response, body) {
@@ -185,19 +167,16 @@ function myMovies(movietitle) {
 		console.log(colors.green('Actors: ') + json.Actors);
 		console.log(colors.green('Plot: ') + json.Plot);
 		console.log(colors.red('Rotten Tomatoes URL: ') + json.tomatoURL);
-
 		//append the results to the log.txt file
 		fs.appendFile("log.txt", "\n" + "Title: " + json.Title + "\n" + "Year: " + json.Year + "\n" + "imdbRating: " + json.imdbRating + "\n" + "Country: " + json.Country + "\n" + "Language: " + json.Language + "\n" + "Actors: " + json.Actors + "\n" + "Plot: " + json.Plot + "\n" + "Rotten Tomatoes URL: " + json.tomatoURL + "\n", genericCallback);
 	});
-
 	function genericCallback(err) {
 		if (err) throw err;
 	};
-
 };
 
 
-//final option aka surprise
+//final option aka WHAZ-UP
 var lastOption = function (last) {
 	//reads the information from the random.txt file to get the information needed for this function
 	fs.readFile('random.txt', 'utf-8', function (err, data) {
