@@ -101,8 +101,8 @@ function myTwitter() {
 			for (tweet in timeline) {
 				//this creates the variable tdate which will store the result of the date from the twitter call for easier access later
 				var tDate = new Date(timeline[tweet].created_at);
-				//console.log all of the tweets organizing them by tweet# followed by the date of the tweet and finally the text of the tweet itself
-				console.log("Tweet #: " + (parseInt(tweet) + 1) + " ");
+				//console.log all of the tweets organizing them by tweet# followed by the date of the tweet and the text of the tweet itself
+				console.log(colors.red("Tweet #: " + (parseInt(tweet) + 1) + " "));
 				console.log(tDate.toString().slice(0, 24) + " ");
 				console.log(timeline[tweet].text);
 				console.log("\n");
@@ -138,7 +138,7 @@ function mySpotify(userSelection) {
 		for (var i = 0; i < music.length; i++) {
 			for (j = 0; j < music[i].artists.length; j++) {
 				console.log(colors.green("Artist: ") + music[i].artists[j].name);
-				console.log(colors.green("Song Name: ") + music[i].name);
+				console.log(colors.red("Song Name: ") + music[i].name);
 				console.log(colors.green("Preview Link of the song from Spotify: ") + music[i].preview_url);
 				console.log(colors.green("Album Name: ") + music[i].album.name + "\n");
 				//this appends the data we receive from the spotify API to the log.txt file
