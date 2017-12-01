@@ -1,4 +1,4 @@
-//variables to call the information from the keys.js file which stores the twitter access keys needed for the twitter option of this app
+//variables to call the information from the keys.js file which stores the twitter and spotify access keys 
 var keys = require('./keys.js');
 var twitterKeys = keys.twitterKeys;
 var spotifyKeys = keys.spotifyKeys;
@@ -82,14 +82,14 @@ prompt.get({
 
 //twitter function
 function myTwitter() {
-	//this assigns the variable client to get the information from the twitterKeys variable set above so we can access twitters information
+	//this assigns the variable client to get the information from the twitterKeys variable 
 	var client = new Twitter({
 		consumer_key: twitterKeys.consumer_key,
 		consumer_secret: twitterKeys.consumer_secret,
 		access_token_key: twitterKeys.access_token_key,
 		access_token_secret: twitterKeys.access_token_secret,
 	});
-	//this sets the variable params to search the username kellsbellslovee and only return back the last 20 tweets and then it doesn't trim the username so the username information will come up instead of the twitter id#
+	//this sets the variable params to search 
 	var params = {
 		screen_name: 'tomperalto',
 		count: '20',
@@ -118,7 +118,7 @@ function myTwitter() {
 
 //spotify function
 function mySpotify(userSelection) {
-	//this starts the search within spotify for the track and the query based on the userselection set in the if/else statement above.  if there is an error it throws the error and continues getting the information.  
+	//this starts the search within spotify for the track and the query based on the userselection   
 	var spotify = new Spotify({
 		id: spotifyKeys.id,
 		secret: spotifyKeys.secret
@@ -132,9 +132,9 @@ function mySpotify(userSelection) {
 			console.error('Something went wrong', err.message);
 			return;
 		}
-		//this sets the variable music to get the initial information from the object, just so it's easier to call in the for loop below
+		//this sets the variable music to get the initial information from the object
 		var music = data.tracks.items;
-		//this loops through the object that we get from spotify and then loops through each objects information to get what we need from spotify
+		//this loops through the object that we get from spotify and then loops through each objects information 
 		for (var i = 0; i < music.length; i++) {
 			for (j = 0; j < music[i].artists.length; j++) {
 				console.log(colors.green("Artist: ") + music[i].artists[j].name);
@@ -158,7 +158,7 @@ function myMovies(movietitle) {
 		if (error) throw error;
 		//JSON.parse the body of the result and store it in the variable json for easier access
 		json = JSON.parse(body);
-		//console.log each of the different things we need to get from the omdb api and add a title for each item and use the colors npm to make the title name a different color than the result for better user access
+		//console.log each of the different things we need to get from the omdb api 
 		console.log(colors.green('Title: ') + json.Title);
 		console.log(colors.green('Year: ') + json.Year);
 		console.log(colors.green('imdbRating: ') + json.imdbRating);
@@ -175,14 +175,13 @@ function myMovies(movietitle) {
 	};
 };
 
-
 //final option aka WHAZ-UP
 var lastOption = function (last) {
 	//reads the information from the random.txt file to get the information needed for this function
 	fs.readFile('random.txt', 'utf-8', function (err, data) {
-		//split the data by the comma so you can access the first part which is which type of search we are doing and the second part which is the userSelection of what we are looking up
+		//split the data by the comma 
 		var things = data.split(',');
-		//pass this information into the spotify function and run the userSelection through to get the results.  this will automatically console.log the info and then append the info into the txt file
+		//pass this information into the spotify function and run the userSelection through to get the results.  
 		if (things[0] === songs) {
 			userSelection = things[1];
 			mySpotify(userSelection);
